@@ -1,5 +1,6 @@
 import uuid
 from flask import jsonify, request, Blueprint
+from flask_jwt_extended import jwt_required
 from src import db
 from src.models import CurrencyModel
 from src.schemas import CurrencySchema
@@ -10,6 +11,7 @@ blueprint_currency = Blueprint('currency', __name__)
 
 
 @blueprint_currency.post('/currency')
+@jwt_required()
 def create_currency():
     currency_data = request.get_json()
     try:
@@ -27,12 +29,14 @@ def create_currency():
 
 
 @blueprint_currency.get('/currencies')
+@jwt_required()
 def get_all_currency():
     currencies = CurrencyModel.query.all()
     return jsonify(currency_schema.dump(currencies, many=True)), 200
 
 
 @blueprint_currency.delete('/currency/<currency_id>')
+@jwt_required()
 def delete_currency(currency_id):
     if not uuid.UUID(currency_id, version=4):
         return jsonify({"error": "Invalid currency_id format"}), 400

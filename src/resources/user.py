@@ -12,6 +12,7 @@ blueprint_user = Blueprint('users', __name__)
 
 
 @blueprint_user.get('/user/<user_id>')
+@jwt_required()
 def get_user(user_id):
     user = UserModel.query.get(user_id)
     try:
@@ -21,6 +22,7 @@ def get_user(user_id):
 
 
 @blueprint_user.delete('/user/<user_id>')
+@jwt_required()
 def delete_user(user_id):
     user = UserModel.query.get(user_id)
     try:
@@ -65,6 +67,7 @@ def login_user():
 
 
 @blueprint_user.get('/users')
+@jwt_required()
 def get_users():
     users = UserModel.query.all()
     return jsonify(user_schema.dump(users, many=True))

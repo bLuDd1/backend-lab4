@@ -1,5 +1,6 @@
 import uuid
 from flask import jsonify, request, Blueprint
+from flask_jwt_extended import jwt_required
 from src import db
 from datetime import datetime
 from src.models import RecordModel, UserModel, CategoryModel, CurrencyModel
@@ -11,6 +12,7 @@ blueprint_record = Blueprint(name="record", import_name=__name__)
 
 
 @blueprint_record.get('/record/<record_id>')
+@jwt_required()
 def get_record(record_id):
     record = RecordModel.query.get(record_id)
     try:
@@ -20,6 +22,7 @@ def get_record(record_id):
 
 
 @blueprint_record.delete('/record/<record_id>')
+@jwt_required()
 def delete_record(record_id):
     record = RecordModel.query.get(record_id)
     try:
@@ -31,6 +34,7 @@ def delete_record(record_id):
 
 
 @blueprint_record.post('/record')
+@jwt_required()
 def create_record():
     record_data = request.json
     try:
@@ -59,6 +63,7 @@ def create_record():
 
 
 @blueprint_record.get('/record')
+@jwt_required()
 def get_records():
     user_id = request.args.get('user_id')
     category_id = request.args.get('category_id')

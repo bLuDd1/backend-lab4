@@ -1,5 +1,6 @@
 import uuid
 from flask import jsonify, request, Blueprint
+from flask_jwt_extended import jwt_required
 from src import db
 from src.models import CategoryModel
 from src.schemas import CategorySchema
@@ -8,13 +9,16 @@ from marshmallow import ValidationError
 category_schema = CategorySchema()
 category_blueprint = Blueprint(name='category', import_name=__name__)
 
+
 @category_blueprint.get('/category')
+@jwt_required()
 def get_category():
     categories = CategoryModel.query.all()
     return jsonify(category_schema.dump(categories, many=True)), 200
 
 
 @category_blueprint.post('/category')
+@jwt_required()
 def create_category():
     category_data = request.get_json()
     try:
@@ -32,6 +36,7 @@ def create_category():
 
 
 @category_blueprint.delete('/category/<category_id>')
+@jwt_required()
 def delete_category(category_id):
     if not uuid.UUID(category_id, version=4):
         return jsonify({"error": "Invalid category_id format"}), 400
