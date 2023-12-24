@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+ src:
+   restart: always
+   build:
+     context: .
+     dockerfile: Dockerfile
+   environment:
+     PORT: "8080"
+   ports:
+     - "8080:8080"
+ db:
+   image: postgres:15.4-alpine3.18
+   environment:
+      POSTGRES_DB: backend_lab3
+      POSTGRES_USER: backend_lab3_user
+      POSTGRES_PASSWORD: e6Hdn4W3l9P1z8xct3uj3hiuoiQWnt7l
+   ports:
+     - "5432:5432"
+   restart: always
