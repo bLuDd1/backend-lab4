@@ -1,5 +1,7 @@
 import uuid
 from flask import jsonify, request, Blueprint
+from flask_jwt_extended import create_access_token, jwt_required
+from passlib.hash import pbkdf2_sha256
 from src import db
 from src.models import UserModel
 from src.schemas import UserSchema
@@ -29,13 +31,14 @@ def delete_user(user_id):
         return jsonify(err.messages), 400
 
 
-@blueprint_user.post('/user')
-def create_user():
+@blueprint_user.post('/register')
+def register_user():
     try:
         data = user_schema.load(request.json)
     except ValidationError as err:
         return jsonify(err.messages), 400
     data['id'] = uuid.uuid4().hex
+    data['password'] = pbkdf2_sha256.hash(data['password'])
     user = UserModel(**data)
     try:
         db.session.add(user)
@@ -43,6 +46,22 @@ def create_user():
     except Exception as e:
         return jsonify(error=str(e)), 400
     return jsonify(user.to_dict())
+
+
+@blueprint_user.post('/login')
+def login_user():
+    try:
+        data = user_schema.load(request.json)
+    except ValidationError as err:
+        return jsonify(err.messages), 400
+
+    user = UserModel.query.filter_by(name=data['name']).first()
+
+    if user and pbkdf2_sha256.verify(data['password'], user.password):
+        access_token = create_access_token(identity=user.id)
+        return jsonify(access_token=access_token), 200
+    else:
+        return jsonify(error='Invalid username or password'), 400
 
 
 @blueprint_user.get('/users')

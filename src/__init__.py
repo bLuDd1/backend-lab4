@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
 from src.db import db
 from .resources.user import blueprint_user
 from .resources.record import blueprint_record
@@ -16,6 +17,8 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+    jwt = JWTManager(app)
 
     app.register_blueprint(blueprint_user)
     app.register_blueprint(category_blueprint)

@@ -5,6 +5,7 @@ class UserSchema(Schema):
     id = fields.UUID(dump_only=True)
     name = fields.Str(required=True)
     default_currency_id = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class CategorySchema(Schema):

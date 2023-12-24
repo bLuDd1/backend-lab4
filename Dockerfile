@@ -13,6 +13,9 @@ RUN python -m pip install -r requirements.txt
 COPY . /app
 
 
+ENV JWT_SECRET_KEY="125876237860748631478297193266074806950"
+
+
 ENV TZ=Europe/Kiev
 
 
