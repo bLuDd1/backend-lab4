@@ -9,21 +9,20 @@ from .resources.currency import blueprint_currency
 from src.views import blueprint
 
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_pyfile('config.py', silent=True)
-    db.init_app(app)
-    migrate = Migrate(app, db)
+app = Flask(__name__)
+app.config.from_pyfile('config.py', silent=True)
+db.init_app(app)
+migrate = Migrate(app, db)
 
-    with app.app_context():
-        db.create_all()
+with app.app_context():
+    db.create_all()
 
-    jwt = JWTManager(app)
+jwt = JWTManager(app)
 
-    app.register_blueprint(blueprint_user)
-    app.register_blueprint(category_blueprint)
-    app.register_blueprint(blueprint_record)
-    app.register_blueprint(blueprint_currency)
-    app.register_blueprint(blueprint)
-    return app
+app.register_blueprint(blueprint_user)
+app.register_blueprint(category_blueprint)
+app.register_blueprint(blueprint_record)
+app.register_blueprint(blueprint_currency)
+app.register_blueprint(blueprint)
+
 
