@@ -3,7 +3,7 @@ from flask import jsonify, request, Blueprint
 from flask_jwt_extended import create_access_token, jwt_required
 from passlib.hash import pbkdf2_sha256
 from src import db
-from src.models import UserModel
+from src.models import UserModel, CurrencyModel
 from src.schemas import UserSchema
 from marshmallow import ValidationError
 
@@ -36,7 +36,7 @@ def delete_user(user_id):
 @blueprint_user.post('/register')
 def register_user():
     try:
-        data = user_schema.load(request.json)
+        data = user_schema.load(request.get_json())
     except ValidationError as err:
         return jsonify(err.messages), 400
     data['id'] = uuid.uuid4().hex
@@ -46,7 +46,7 @@ def register_user():
         db.session.add(user)
         db.session.commit()
     except Exception as e:
-        return jsonify(error=str(e)), 400
+        return jsonify(error=str(e)), 401
     return jsonify(user.to_dict())
 
 

@@ -43,7 +43,7 @@ def create_record():
         return jsonify(err.messages), 401
 
     data['id'] = uuid.uuid4().hex
-    data['created_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    data['created_at'] = datetime.now()
     user = UserModel.query.get(record_data['user_id'])
     category = CategoryModel.query.get(record_data["category_id"])
     currency = CurrencyModel.query.get(record_data["currency_id"])
